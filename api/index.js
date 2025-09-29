@@ -7,23 +7,26 @@ const { body, validationResult } = require("express-validator");
 require("dotenv").config();
 
 const app = express();
-const PORT = process.env.PORT || 3000;
 
+// Middlewares
 app.use(helmet());
 app.use(cors());
 app.use(express.json());
 
+// Rate Limiter
 const apiLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000,
-  max: 100,
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100, // Limit each IP to 100 requests per window
   standardHeaders: true,
   legacyHeaders: false,
 });
 app.use("/api", apiLimiter);
 
+// In-memory data store
 const users = new Map();
 users.set("existinguser", { username: "existinguser" });
 
+// API Endpoints
 app.post("/api/validate-username", (req, res) => {
   const { username } = req.body;
   if (!username) {
@@ -57,23 +60,21 @@ app.post(
       const hashedPassword = await bcrypt.hash(password, 12);
 
       const newUser = {
-          id: Date.now().toString(), // Simple unique ID
-          username: username,
-          email: email,
-          ...req.body, // Include other form fields
-          password: hashedPassword,
-          registeredAt: new Date().toISOString()
+        id: Date.now().toString(),
+        username: username,
+        email: email,
+        ...req.body,
+        password: hashedPassword,
+        registeredAt: new Date().toISOString()
       };
       
       users.set(username.toLowerCase(), newUser);
 
       console.log(`[INFO] New user registered: Username=${username}, Email=${email}`);
       
-      // Create a user object to send back (WITHOUT the password)
       const userResponse = { ...newUser };
       delete userResponse.password;
 
-      // UPDATED: Return the user object in the response
       res.status(201).json({ 
           success: true, 
           message: "Registration successful!",
@@ -87,4 +88,5 @@ app.post(
   }
 );
 
-app.listen(PORT, () => console.log(`Backend running on http://localhost:${PORT}`));
+// Export the app for Vercel
+module.exports = app;
