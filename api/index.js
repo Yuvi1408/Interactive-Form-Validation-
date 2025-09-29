@@ -13,21 +13,22 @@ app.use(helmet());
 app.use(cors());
 app.use(express.json());
 
-// Rate Limiter
+// Note: The rate limiter applies to all routes handled by this function
 const apiLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100, // Limit each IP to 100 requests per window
+  windowMs: 15 * 60 * 1000,
+  max: 100,
   standardHeaders: true,
   legacyHeaders: false,
 });
-app.use("/api", apiLimiter);
+app.use(apiLimiter);
 
 // In-memory data store
 const users = new Map();
 users.set("existinguser", { username: "existinguser" });
 
 // API Endpoints
-app.post("/api/validate-username", (req, res) => {
+// FIXED: Removed "/api" prefix from the route
+app.post("/validate-username", (req, res) => {
   const { username } = req.body;
   if (!username) {
     return res.status(400).json({ available: false, message: "Username is required." });
@@ -36,8 +37,9 @@ app.post("/api/validate-username", (req, res) => {
   res.json({ available: !isTaken });
 });
 
+// FIXED: Removed "/api" prefix from the route
 app.post(
-  "/api/submit-form",
+  "/submit-form",
   body("username")
     .trim()
     .isLength({ min: 3 })
