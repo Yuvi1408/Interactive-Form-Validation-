@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Advanced Form Validation</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>Register</h1>
+      <button id="themeToggle" aria-label="Toggle dark mode" aria-pressed="false">🌓</button>
+    </header>
+
+    <form id="registrationForm" novalidate>
+      <div class="progress">
+        <div id="progressBar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+      </div>
+
+      <label for="username">Username *</label>
+      <input type="text" id="username" name="username" required autocomplete="username" aria-describedby="username-error">
+      <small id="username-error" class="error" aria-live="polite"></small>
+
+      <label for="fullName">Full Name *</label>
+      <input type="text" id="fullName" name="fullName" required autocomplete="name" aria-describedby="fullName-error">
+      <small id="fullName-error" class="error" aria-live="polite"></small>
+
+      <label for="email">Email *</label>
+      <input type="email" id="email" name="email" required autocomplete="email" aria-describedby="email-error">
+      <small id="email-error" class="error" aria-live="polite"></small>
+
+      <label for="phone">Phone *</label>
+      <input type="tel" id="phone" name="phone" required autocomplete="tel" aria-describedby="phone-error">
+      <small id="phone-error" class="error" aria-live="polite"></small>
+
+      <label for="password">Password *</label>
+      <div class="input-wrap">
+        <input type="password" id="password" name="password" required autocomplete="new-password" aria-describedby="password-error password-strength-text">
+        <button type="button" id="togglePassword" aria-label="Show or hide password">👁️</button>
+      </div>
+      <div class="strength">
+        <div id="meter" role="meter" aria-valuemin="0" aria-valuemax="4"><span id="meterFill"></span></div>
+        <p id="password-strength-text" aria-live="polite">Strength: None</p>
+      </div>
+      <small id="password-error" class="error" aria-live="polite"></small>
+
+      <label for="confirmPassword">Confirm Password *</label>
+      <input type="password" id="confirmPassword" name="confirmPassword" required autocomplete="new-password" aria-describedby="confirmPassword-error">
+      <small id="confirmPassword-error" class="error" aria-live="polite"></small>
+
+      <label for="website">Website</label>
+      <input type="url" id="website" name="website" autocomplete="url" aria-describedby="website-error">
+      <small id="website-error" class="error" aria-live="polite"></small>
+
+      <label for="birthdate">Date of Birth *</label>
+      <input type="date" id="birthdate" name="birthdate" required autocomplete="bday" aria-describedby="birthdate-error">
+      <small id="birthdate-error" class="error" aria-live="polite"></small>
+
+      <div class="form-group-checkbox">
+        <input type="checkbox" id="terms" name="terms" required aria-describedby="terms-error">
+        <label for="terms">Accept Terms & Conditions *</label>
+      </div>
+      <small id="terms-error" class="error" aria-live="polite"></small>
+
+      <button type="submit" id="submitBtn" disabled>Register</button>
+      <p id="formMessage" aria-live="assertive"></p>
+      
+      <div class="form-links">
+        <a href="#" id="forgotPasswordLink">Forgot Password?</a>
+      </div>
+    </form>
+  </div>
+
+  <script src="app.js"></script>
+  <script>
+    // Register the service worker
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js')
+          .then(registration => console.log('ServiceWorker registration successful with scope: ', registration.scope))
+          .catch(err => console.log('ServiceWorker registration failed: ', err));
+      });
+    }
+  </script>
+</body>
+</html>
